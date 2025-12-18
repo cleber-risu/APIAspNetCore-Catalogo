@@ -1,6 +1,7 @@
 
 using System.Collections;
 using ApiCatalogo.Models;
+using ApiCatalogo.Repositories.interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,8 +9,10 @@ namespace ApiCatalogo.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class CategoriasController : ControllerBase
+public class CategoriasController(ICategoriaRepository repository) : ControllerBase
 {
+
+  private readonly ICategoriaRepository _repository = repository;
 
   private static List<Categoria> _list = [
     new() { Id = 1, Nome = "Ferramentas", ImagemUrl = "ferragens.png" },
@@ -20,15 +23,16 @@ public class CategoriasController : ControllerBase
   [HttpGet]
   public ActionResult<IEnumerable<Categoria>> Get()
   {
-    return Ok(_list);
+    var categorias = _repository.GetAll();
+    return Ok(categorias);
   }
 
-  [HttpGet("{id:long}", Name = "ObterCategoria")]
-  public ActionResult Get(long id)
+  [HttpGet("{id:int}", Name = "ObterCategoria")]
+  public ActionResult Get(int id)
   {
-    var categoria = _list.SingleOrDefault(c => c.Id == id);
+    var categoria = _repository.GetById(id);
 
-    if (categoria is null) return NotFound("A categoria não existe!");
+    if (categoria is null) return NotFound($"A categoria com id = {id} não existe!");
 
     return Ok(categoria);
   }
@@ -38,38 +42,35 @@ public class CategoriasController : ControllerBase
   {
     if (categoria is null) return BadRequest("Dados invalidos");
 
-    //categoria.Id = DateTime.Now.Ticks;
-    _list.Add(categoria);
+    var categoriaCriada = _repository.Create(categoria);
 
-    return new CreatedAtRouteResult("ObterCategoria", new { id = categoria.Id }, categoria);
+    return new CreatedAtRouteResult("ObterCategoria", new { id = categoriaCriada.Id }, categoriaCriada);
   }
 
   [HttpPut("{id:int}")]
-  public ActionResult Put(int id, Categoria categoria)
+  public ActionResult Put(int id, Categoria categoriaParaEdicao)
   {
-    if (id != categoria.Id) return BadRequest("Dados invalidos");
+    var categoria = _repository.GetById(id);
 
-    var categoriaEditada = _list.SingleOrDefault(c => c.Id == id);
+    if (categoria is null) return NotFound($"A categoria com id = {id} não existe!");
 
-    if (categoriaEditada is null) return NotFound("Categoria não encotrando");
+    if (id != categoriaParaEdicao.Id) return BadRequest("Dados invalidos");
 
-    categoriaEditada.Nome = categoria.Nome;
-    categoriaEditada.ImagemUrl = categoria.ImagemUrl;
-    categoriaEditada.Produtos = categoriaEditada.Produtos;
+    var categoriaEditada = _repository.Update(categoriaParaEdicao);
 
     return Ok(categoriaEditada);
   }
 
-  [HttpDelete("{id:long}")]
-  public ActionResult DeletarCategoria(long id)
+  [HttpDelete("{id:int}")]
+  public ActionResult DeletarCategoria(int id)
   {
-    var categoria = _list.SingleOrDefault(c => c.Id == id);
+    var existe = _repository.Exists(id);
 
-    if (categoria is null) return NotFound("A categoria não existe!");
+    if (!existe) return NotFound($"A categoria com id = {id} não existe!");
 
-    _list = _list.Where(c => c.Id != id).ToList();
+    var categoriaExcluida = _repository.Delete(id);
 
-    return NoContent();
+    return Ok(categoriaExcluida);
   }
 }
 
