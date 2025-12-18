@@ -38,7 +38,7 @@ public class CategoriasController : ControllerBase
   {
     if (categoria is null) return BadRequest("Dados invalidos");
 
-    categoria.Id = DateTime.Now.Ticks;
+    //categoria.Id = DateTime.Now.Ticks;
     _list.Add(categoria);
 
     return new CreatedAtRouteResult("ObterCategoria", new { id = categoria.Id }, categoria);
