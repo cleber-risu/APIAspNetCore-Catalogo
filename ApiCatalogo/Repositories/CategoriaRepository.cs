@@ -6,9 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ApiCatalogo.Repositories;
 
-public class CategoriaRepository(ApiCatalogoContext context) : ICategoriaRepository
+public class CategoriaRepository(ApiCatalogoContext _context) : ICategoriaRepository
 {
-  private readonly ApiCatalogoContext _context = context;
 
   public IEnumerable<Categoria> GetAll()
   {

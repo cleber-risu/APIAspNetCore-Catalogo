@@ -9,16 +9,8 @@ namespace ApiCatalogo.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class CategoriasController(ICategoriaRepository repository) : ControllerBase
+public class CategoriasController(ICategoriaRepository _repository) : ControllerBase
 {
-
-  private readonly ICategoriaRepository _repository = repository;
-
-  private static List<Categoria> _list = [
-    new() { Id = 1, Nome = "Ferramentas", ImagemUrl = "ferragens.png" },
-    new() { Id = 2, Nome = "Eletronicos", ImagemUrl = "eletro.png" },
-    new() { Id = 3, Nome = "Informatica", ImagemUrl = "info.png" }
-  ];
 
   [HttpGet]
   public ActionResult<IEnumerable<Categoria>> Get()
@@ -62,7 +54,7 @@ public class CategoriasController(ICategoriaRepository repository) : ControllerB
   }
 
   [HttpDelete("{id:int}")]
-  public ActionResult DeletarCategoria(int id)
+  public ActionResult Delete(int id)
   {
     var existe = _repository.Exists(id);
 
