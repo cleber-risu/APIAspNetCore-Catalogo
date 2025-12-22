@@ -23,7 +23,7 @@ public class ProdutosController(IProdutoRepository _repository) : ControllerBase
   [HttpGet("{id:int}", Name = "ObterProduto")]
   public ActionResult<Produto> Get(int id)
   {
-    var produto = _repository.GetById(id);
+    var produto = _repository.Get(p => p.Id == id);
 
     if (produto is null) return NotFound("Produto não encontrado");
 
@@ -43,11 +43,11 @@ public class ProdutosController(IProdutoRepository _repository) : ControllerBase
   [HttpPut("{id:int}")]
   public ActionResult Put(int id, Produto produtoParaEdicao)
   {
-    var existe = _repository.Exists(id);
-
-    if (!existe) return NotFound("Produto não encontrado");
+    var existe = _repository.Exists(p => p.Id == id);
 
     if (id != produtoParaEdicao.Id) return BadRequest();
+
+    if (!existe) return NotFound("Produto não encontrado");
 
     var produtoEditado = _repository.Update(produtoParaEdicao);
 
@@ -57,11 +57,11 @@ public class ProdutosController(IProdutoRepository _repository) : ControllerBase
   [HttpDelete("{id:int}")]
   public ActionResult Delete(int id)
   {
-    var existe = _repository.Exists(id);
+    var produto = _repository.Get(p => p.Id == id);
 
-    if (!existe) return NotFound($"O produto de id = {id} não existe.");
+    if (produto is null) return NotFound($"O produto de id = {id} não existe.");
 
-    var produtoExcluido = _repository.Delete(id);
+    var produtoExcluido = _repository.Delete(produto);
 
     return Ok(produtoExcluido);
   }

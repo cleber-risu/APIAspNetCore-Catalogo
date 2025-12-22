@@ -22,7 +22,7 @@ public class CategoriasController(ICategoriaRepository _repository) : Controller
   [HttpGet("{id:int}", Name = "ObterCategoria")]
   public ActionResult Get(int id)
   {
-    var categoria = _repository.GetById(id);
+    var categoria = _repository.Get(c => c.Id == id);
 
     if (categoria is null) return NotFound($"A categoria com id = {id} não existe!");
 
@@ -42,11 +42,11 @@ public class CategoriasController(ICategoriaRepository _repository) : Controller
   [HttpPut("{id:int}")]
   public ActionResult Put(int id, Categoria categoriaParaEdicao)
   {
-    var categoria = _repository.GetById(id);
-
-    if (categoria is null) return NotFound($"A categoria com id = {id} não existe!");
+    var existe = _repository.Exists(c => c.Id == id);
 
     if (id != categoriaParaEdicao.Id) return BadRequest("Dados invalidos");
+
+    if (!existe) return NotFound($"A categoria com id = {id} não existe!");
 
     var categoriaEditada = _repository.Update(categoriaParaEdicao);
 
@@ -56,11 +56,11 @@ public class CategoriasController(ICategoriaRepository _repository) : Controller
   [HttpDelete("{id:int}")]
   public ActionResult Delete(int id)
   {
-    var existe = _repository.Exists(id);
+    var categoria = _repository.Get(c => c.Id == id);
 
-    if (!existe) return NotFound($"A categoria com id = {id} não existe!");
+    if (categoria is null) return NotFound($"A categoria com id = {id} não existe!");
 
-    var categoriaExcluida = _repository.Delete(id);
+    var categoriaExcluida = _repository.Delete(categoria);
 
     return Ok(categoriaExcluida);
   }
