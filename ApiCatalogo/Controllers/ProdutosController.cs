@@ -7,13 +7,13 @@ namespace ApiCatalogo.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ProdutosController(IProdutoRepository _repository) : ControllerBase
+public class ProdutosController(IUnityOfWork _repository) : ControllerBase
 {
 
   [HttpGet]
   public ActionResult<IEnumerable<Produto>> Get()
   {
-    var produtos = _repository.GetAll();
+    var produtos = _repository.ProdutoRepository.GetAll();
 
     if (produtos is null) return NotFound("Nenhum produto cadastrado no sistema!");
 
@@ -23,7 +23,7 @@ public class ProdutosController(IProdutoRepository _repository) : ControllerBase
   [HttpGet("{id:int}", Name = "ObterProduto")]
   public ActionResult<Produto> Get(int id)
   {
-    var produto = _repository.Get(p => p.Id == id);
+    var produto = _repository.ProdutoRepository.Get(p => p.Id == id);
 
     if (produto is null) return NotFound("Produto não encontrado");
 
@@ -35,7 +35,8 @@ public class ProdutosController(IProdutoRepository _repository) : ControllerBase
   {
     if (produto is null) return BadRequest();
 
-    var novoProduto = _repository.Create(produto);
+    var novoProduto = _repository.ProdutoRepository.Create(produto);
+    _repository.Commit();
 
     return new CreatedAtRouteResult("ObterProduto", new { id = novoProduto.Id }, novoProduto);
   }
@@ -43,13 +44,14 @@ public class ProdutosController(IProdutoRepository _repository) : ControllerBase
   [HttpPut("{id:int}")]
   public ActionResult Put(int id, Produto produtoParaEdicao)
   {
-    var existe = _repository.Exists(p => p.Id == id);
+    var existe = _repository.ProdutoRepository.Exists(p => p.Id == id);
 
     if (id != produtoParaEdicao.Id) return BadRequest();
 
     if (!existe) return NotFound("Produto não encontrado");
 
-    var produtoEditado = _repository.Update(produtoParaEdicao);
+    var produtoEditado = _repository.ProdutoRepository.Update(produtoParaEdicao);
+    _repository.Commit();
 
     return Ok(produtoEditado);
   }
@@ -57,11 +59,12 @@ public class ProdutosController(IProdutoRepository _repository) : ControllerBase
   [HttpDelete("{id:int}")]
   public ActionResult Delete(int id)
   {
-    var produto = _repository.Get(p => p.Id == id);
+    var produto = _repository.ProdutoRepository.Get(p => p.Id == id);
 
     if (produto is null) return NotFound($"O produto de id = {id} não existe.");
 
-    var produtoExcluido = _repository.Delete(produto);
+    var produtoExcluido = _repository.ProdutoRepository.Delete(produto);
+    _repository.Commit();
 
     return Ok(produtoExcluido);
   }

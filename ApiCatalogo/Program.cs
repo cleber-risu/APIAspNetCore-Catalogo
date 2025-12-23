@@ -18,6 +18,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repositoy<>));
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
+builder.Services.AddScoped<IUnityOfWork, UnityOfWork>();
 
 var app = builder.Build();
 
