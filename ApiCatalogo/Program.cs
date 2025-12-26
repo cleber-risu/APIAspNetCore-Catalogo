@@ -1,4 +1,5 @@
 using ApiCatalogo.Context;
+using ApiCatalogo.DTOs.Mappings;
 using ApiCatalogo.Repositories;
 using ApiCatalogo.Repositories.interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,9 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repositoy<>));
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
 builder.Services.AddScoped<IUnityOfWork, UnityOfWork>();
+
+// builder.Services.AddAutoMapper(typeof(DomainToDTOMappingProfile).Assembly);
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<DomainToDTOMappingProfile>());
 
 var app = builder.Build();
 
