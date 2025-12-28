@@ -3,6 +3,7 @@ using ApiCatalogo.DTOs;
 using ApiCatalogo.Models;
 using ApiCatalogo.Repositories.interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiCatalogo.Controllers;
@@ -23,6 +24,33 @@ public class ProdutosController(IUnityOfWork _repository, IMapper _mapper) : Con
     var produtosDto = _mapper.Map<IEnumerable<ProdutoDTO>>(produtos);
 
     return Ok(produtosDto);
+  }
+
+  [HttpPatch("{id}/UpdatePartial")]
+  public ActionResult<ProdutoDTOUpdateResponse> Patch(
+    int id,
+    JsonPatchDocument<ProdutoDTOUpdateRequest> patchProdutoDTO
+    )
+  {
+    if (patchProdutoDTO is null || id <= 0) return BadRequest();
+
+    var produto = _repository.ProdutoRepository.Get(p => p.Id == id);
+
+    if (produto is null) return NotFound();
+
+    var produtoUpdateRequest = _mapper.Map<ProdutoDTOUpdateRequest>(produto);
+
+    patchProdutoDTO.ApplyTo(produtoUpdateRequest, ModelState);
+
+    if (!ModelState.IsValid || !TryValidateModel(produtoUpdateRequest))
+      return BadRequest(ModelState);
+
+    _mapper.Map(produtoUpdateRequest, produto);
+
+    _repository.ProdutoRepository.Update(produto);
+    _repository.Commit();
+
+    return Ok(_mapper.Map<ProdutoDTOUpdateResponse>(produto));
   }
 
   [HttpGet("categoria/{id}")]
