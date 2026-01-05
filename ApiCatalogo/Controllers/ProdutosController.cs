@@ -20,6 +20,19 @@ public class ProdutosController(IUnityOfWork _repository, IMapper _mapper) : Con
   {
     var produtos = _repository.ProdutoRepository.GetProdutos(parameters);
 
+    return ObterProdutos(produtos);
+  }
+
+  [HttpGet("filter/preco/pagination")]
+  public ActionResult<IEnumerable<ProdutoDTO>> GetProdutosFilterPreco([FromQuery] ProdutosFiltroPreco parameters)
+  {
+    var produtos = _repository.ProdutoRepository.GetProdutosFiltroPreco(parameters);
+
+    return ObterProdutos(produtos);
+  }
+
+  private ActionResult<IEnumerable<ProdutoDTO>> ObterProdutos(PagedList<Produto> produtos)
+  {
     var metadata = new
     {
       produtos.TotalCount,
