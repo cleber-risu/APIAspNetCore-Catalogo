@@ -1,7 +1,7 @@
 
-using ApiCatalogo.Models;
+using ApiCatalogo.Models.Entities;
 
-namespace ApiCatalogo.DTOs.Mappings;
+namespace ApiCatalogo.Models.DTOs.Mappings;
 
 public static class CategoriaDTOMappingExtensions
 {

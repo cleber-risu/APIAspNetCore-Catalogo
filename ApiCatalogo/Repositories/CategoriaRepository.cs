@@ -1,6 +1,6 @@
 
 using ApiCatalogo.Context;
-using ApiCatalogo.Models;
+using ApiCatalogo.Models.Entities;
 using ApiCatalogo.Repositories.interfaces;
 
 namespace ApiCatalogo.Repositories;

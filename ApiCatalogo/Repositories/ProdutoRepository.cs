@@ -1,6 +1,6 @@
 
 using ApiCatalogo.Context;
-using ApiCatalogo.Models;
+using ApiCatalogo.Models.Entities;
 using ApiCatalogo.Pagination;
 using ApiCatalogo.Repositories.interfaces;
 

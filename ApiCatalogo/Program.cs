@@ -1,5 +1,6 @@
+
 using ApiCatalogo.Context;
-using ApiCatalogo.DTOs.Mappings;
+using ApiCatalogo.Models.DTOs.Mappings;
 using ApiCatalogo.Repositories;
 using ApiCatalogo.Repositories.interfaces;
 using Microsoft.EntityFrameworkCore;

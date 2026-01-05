@@ -1,7 +1,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace ApiCatalogo.DTOs;
+namespace ApiCatalogo.Models.DTOs;
 
 public class ProdutoDTOUpdateRequest : IValidatableObject
 {

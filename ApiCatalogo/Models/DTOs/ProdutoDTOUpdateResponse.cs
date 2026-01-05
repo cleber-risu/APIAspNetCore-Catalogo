@@ -1,7 +1,7 @@
 
-using ApiCatalogo.Models;
+using ApiCatalogo.Models.Entities;
 
-namespace ApiCatalogo.DTOs;
+namespace ApiCatalogo.Models.DTOs;
 
 public class ProdutoDTOUpdateResponse
 {

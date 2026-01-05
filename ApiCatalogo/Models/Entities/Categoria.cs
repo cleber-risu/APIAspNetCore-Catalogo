@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace ApiCatalogo.Models;
+namespace ApiCatalogo.Models.Entities;
 
 [Table("Categorias")]
 public class Categoria

@@ -1,8 +1,6 @@
 
-using System.Collections;
-using ApiCatalogo.DTOs;
-using ApiCatalogo.DTOs.Mappings;
-using ApiCatalogo.Models;
+using ApiCatalogo.Models.DTOs;
+using ApiCatalogo.Models.DTOs.Mappings;
 using ApiCatalogo.Repositories.interfaces;
 using Microsoft.AspNetCore.Mvc;
 

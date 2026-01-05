@@ -1,12 +1,12 @@
 
-using ApiCatalogo.DTOs;
-using ApiCatalogo.Models;
-using ApiCatalogo.Pagination;
+using ApiCatalogo.Models.DTOs;
+using ApiCatalogo.Models.Entities;
+using ApiCatalogo.Models.Pagination;
 using ApiCatalogo.Repositories.interfaces;
-using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using AutoMapper;
 
 namespace ApiCatalogo.Controllers;
 

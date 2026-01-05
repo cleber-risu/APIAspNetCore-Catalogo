@@ -1,5 +1,5 @@
 
-namespace ApiCatalogo.Pagination;
+namespace ApiCatalogo.Models.Pagination;
 
 public class ProdutosParameters
 {

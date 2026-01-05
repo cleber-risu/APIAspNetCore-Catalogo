@@ -1,8 +1,8 @@
 
-using ApiCatalogo.Models;
+using ApiCatalogo.Models.Entities;
 using AutoMapper;
 
-namespace ApiCatalogo.DTOs.Mappings;
+namespace ApiCatalogo.Models.DTOs.Mappings;
 
 public class DomainToDTOMappingProfile : Profile
 {

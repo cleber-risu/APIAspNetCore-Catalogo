@@ -1,6 +1,6 @@
 
-using ApiCatalogo.Models;
-using ApiCatalogo.Pagination;
+using ApiCatalogo.Models.Entities;
+using ApiCatalogo.Models.Pagination;
 
 namespace ApiCatalogo.Repositories.interfaces;
 

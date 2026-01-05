@@ -1,5 +1,5 @@
 
-using ApiCatalogo.Models;
+using ApiCatalogo.Models.Entities;
 
 namespace ApiCatalogo.Repositories.interfaces;
 
