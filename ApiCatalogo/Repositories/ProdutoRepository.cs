@@ -1,7 +1,7 @@
 
 using ApiCatalogo.Context;
 using ApiCatalogo.Models.Entities;
-using ApiCatalogo.Pagination;
+using ApiCatalogo.Models.Pagination;
 using ApiCatalogo.Repositories.interfaces;
 
 namespace ApiCatalogo.Repositories;
