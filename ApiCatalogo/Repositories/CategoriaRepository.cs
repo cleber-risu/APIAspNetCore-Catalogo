@@ -16,5 +16,19 @@ public class CategoriaRepository(ApiCatalogoContext _context) : Repositoy<Catego
 
     return categoriasOrdenadas;
   }
+
+  public PagedList<Categoria> GetCategoriasFiltroNome(CategoriasFiltroNome parameters)
+  {
+    var categorias = GetAll().AsQueryable();
+
+    if (!string.IsNullOrEmpty(parameters.Nome))
+    {
+      categorias = categorias.Where(c => c.Nome!.Contains(parameters.Nome));
+    }
+
+    var categoriasFiltradas = PagedList<Categoria>.ToPagedList(categorias, parameters.PageNumber, parameters.PageSize);
+
+    return categoriasFiltradas;
+  }
 }
 
