@@ -16,17 +16,17 @@ public class ProdutosController(IUnityOfWork _repository, IMapper _mapper) : Con
 {
 
   [HttpGet("pagination")]
-  public ActionResult<IEnumerable<ProdutoDTO>> Get([FromQuery] ProdutosParameters parameters)
+  public async Task<ActionResult<IEnumerable<ProdutoDTO>>> Get([FromQuery] ProdutosParameters parameters)
   {
-    var produtos = _repository.ProdutoRepository.GetProdutos(parameters);
+    var produtos = await _repository.ProdutoRepository.GetProdutos(parameters);
 
     return ObterProdutos(produtos);
   }
 
   [HttpGet("filter/preco/pagination")]
-  public ActionResult<IEnumerable<ProdutoDTO>> GetProdutosFilterPreco([FromQuery] ProdutosFiltroPreco parameters)
+  public async Task<ActionResult<IEnumerable<ProdutoDTO>>> GetProdutosFilterPreco([FromQuery] ProdutosFiltroPreco parameters)
   {
-    var produtos = _repository.ProdutoRepository.GetProdutosFiltroPreco(parameters);
+    var produtos = await _repository.ProdutoRepository.GetProdutosFiltroPreco(parameters);
 
     return ObterProdutos(produtos);
   }
@@ -51,9 +51,9 @@ public class ProdutosController(IUnityOfWork _repository, IMapper _mapper) : Con
   }
 
   [HttpGet]
-  public ActionResult<IEnumerable<ProdutoDTO>> Get()
+  public async Task<ActionResult<IEnumerable<ProdutoDTO>>> Get()
   {
-    var produtos = _repository.ProdutoRepository.GetAll();
+    var produtos = await _repository.ProdutoRepository.GetAll();
 
     if (produtos is null) return NotFound("Nenhum produto cadastrado no sistema!");
 
@@ -64,14 +64,14 @@ public class ProdutosController(IUnityOfWork _repository, IMapper _mapper) : Con
   }
 
   [HttpPatch("{id}/UpdatePartial")]
-  public ActionResult<ProdutoDTOUpdateResponse> Patch(
+  public async Task<ActionResult<ProdutoDTOUpdateResponse>> Patch(
     int id,
     JsonPatchDocument<ProdutoDTOUpdateRequest> patchProdutoDTO
     )
   {
     if (patchProdutoDTO is null || id <= 0) return BadRequest();
 
-    var produto = _repository.ProdutoRepository.Get(p => p.Id == id);
+    var produto = await _repository.ProdutoRepository.Get(p => p.Id == id);
 
     if (produto is null) return NotFound();
 
@@ -85,15 +85,15 @@ public class ProdutosController(IUnityOfWork _repository, IMapper _mapper) : Con
     _mapper.Map(produtoUpdateRequest, produto);
 
     _repository.ProdutoRepository.Update(produto);
-    _repository.Commit();
+    await _repository.Commit();
 
     return Ok(_mapper.Map<ProdutoDTOUpdateResponse>(produto));
   }
 
   [HttpGet("categoria/{id}")]
-  public ActionResult<IEnumerable<ProdutoDTO>> GetProdutosPorCategoria(int id)
+  public async Task<ActionResult<IEnumerable<ProdutoDTO>>> GetProdutosPorCategoria(int id)
   {
-    var produtos = _repository.ProdutoRepository.GetProdutosPorCategoria(id);
+    var produtos = await _repository.ProdutoRepository.GetProdutosPorCategoria(id);
 
     if (produtos is null) return NotFound();
 
@@ -103,9 +103,9 @@ public class ProdutosController(IUnityOfWork _repository, IMapper _mapper) : Con
   }
 
   [HttpGet("{id:int}", Name = "ObterProduto")]
-  public ActionResult<ProdutoDTO> Get(int id)
+  public async Task<ActionResult<ProdutoDTO>> Get(int id)
   {
-    var produto = _repository.ProdutoRepository.Get(p => p.Id == id);
+    var produto = await _repository.ProdutoRepository.Get(p => p.Id == id);
 
     if (produto is null) return NotFound("Produto não encontrado");
 
@@ -115,14 +115,14 @@ public class ProdutosController(IUnityOfWork _repository, IMapper _mapper) : Con
   }
 
   [HttpPost]
-  public ActionResult<ProdutoDTO> Post(ProdutoDTO produtoDto)
+  public async Task<ActionResult<ProdutoDTO>> Post(ProdutoDTO produtoDto)
   {
     if (produtoDto is null) return BadRequest();
 
     var produto = _mapper.Map<Produto>(produtoDto);
 
     var novoProduto = _repository.ProdutoRepository.Create(produto);
-    _repository.Commit();
+    await _repository.Commit();
 
     var novoProdutoDto = _mapper.Map<ProdutoDTO>(novoProduto);
 
@@ -130,7 +130,7 @@ public class ProdutosController(IUnityOfWork _repository, IMapper _mapper) : Con
   }
 
   [HttpPut("{id:int}")]
-  public ActionResult<ProdutoDTO> Put(int id, ProdutoDTO produtoDto)
+  public async Task<ActionResult<ProdutoDTO>> Put(int id, ProdutoDTO produtoDto)
   {
     var existe = _repository.ProdutoRepository.Exists(p => p.Id == id);
 
@@ -141,7 +141,7 @@ public class ProdutosController(IUnityOfWork _repository, IMapper _mapper) : Con
     var produto = _mapper.Map<Produto>(produtoDto);
 
     var produtoEditado = _repository.ProdutoRepository.Update(produto);
-    _repository.Commit();
+    await _repository.Commit();
 
     var produtoDtoEditado = _mapper.Map<ProdutoDTO>(produtoEditado);
 
@@ -149,14 +149,14 @@ public class ProdutosController(IUnityOfWork _repository, IMapper _mapper) : Con
   }
 
   [HttpDelete("{id:int}")]
-  public ActionResult<ProdutoDTO> Delete(int id)
+  public async Task<ActionResult<ProdutoDTO>> Delete(int id)
   {
-    var produto = _repository.ProdutoRepository.Get(p => p.Id == id);
+    var produto = await _repository.ProdutoRepository.Get(p => p.Id == id);
 
     if (produto is null) return NotFound($"O produto de id = {id} não existe.");
 
     var produtoExcluido = _repository.ProdutoRepository.Delete(produto);
-    _repository.Commit();
+    await _repository.Commit();
 
     var produtoDtoExcluido = _mapper.Map<ProdutoDTO>(produtoExcluido);
 

@@ -9,9 +9,9 @@ namespace ApiCatalogo.Repositories;
 public class Repositoy<T>(ApiCatalogoContext _context) : IRepository<T> where T : class
 {
 
-  public IEnumerable<T> GetAll()
+  public async Task<IEnumerable<T>> GetAll()
   {
-    return _context.Set<T>().AsNoTracking().ToList();
+    return await _context.Set<T>().AsNoTracking().ToListAsync();
   }
 
   public bool Exists(Expression<Func<T, bool>> predicate)
@@ -19,9 +19,9 @@ public class Repositoy<T>(ApiCatalogoContext _context) : IRepository<T> where T 
     return _context.Set<T>().Any(predicate);
   }
 
-  public T? Get(Expression<Func<T, bool>> predicate)
+  public async Task<T?> Get(Expression<Func<T, bool>> predicate)
   {
-    return _context.Set<T>().AsNoTracking().FirstOrDefault(predicate);
+    return await _context.Set<T>().AsNoTracking().FirstOrDefaultAsync(predicate);
   }
 
   public T Create(T entity)

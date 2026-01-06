@@ -8,25 +8,26 @@ namespace ApiCatalogo.Repositories;
 
 public class CategoriaRepository(ApiCatalogoContext _context) : Repositoy<Categoria>(_context), ICategoriaRepository
 {
-  public PagedList<Categoria> GetCategorias(CategoriasParameters parameters)
+  public async Task<PagedList<Categoria>> GetCategorias(CategoriasParameters parameters)
   {
-    var categorias = GetAll()
-                      .OrderBy(c => c.Id).AsQueryable();
-    var categoriasOrdenadas = PagedList<Categoria>.ToPagedList(categorias, parameters.PageNumber, parameters.PageSize);
+    var categorias = await GetAll();
+    var categoriasOrdenadas = categorias.OrderBy(c => c.Id).AsQueryable();
 
-    return categoriasOrdenadas;
+    var categoriasPaginadas = PagedList<Categoria>.ToPagedList(categoriasOrdenadas, parameters.PageNumber, parameters.PageSize);
+
+    return categoriasPaginadas;
   }
 
-  public PagedList<Categoria> GetCategoriasFiltroNome(CategoriasFiltroNome parameters)
+  public async Task<PagedList<Categoria>> GetCategoriasFiltroNome(CategoriasFiltroNome parameters)
   {
-    var categorias = GetAll().AsQueryable();
+    var categorias = await GetAll();
 
     if (!string.IsNullOrEmpty(parameters.Nome))
     {
       categorias = categorias.Where(c => c.Nome!.Contains(parameters.Nome));
     }
 
-    var categoriasFiltradas = PagedList<Categoria>.ToPagedList(categorias, parameters.PageNumber, parameters.PageSize);
+    var categoriasFiltradas = PagedList<Categoria>.ToPagedList(categorias.AsQueryable(), parameters.PageNumber, parameters.PageSize);
 
     return categoriasFiltradas;
   }

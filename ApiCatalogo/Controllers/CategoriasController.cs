@@ -13,16 +13,16 @@ namespace ApiCatalogo.Controllers;
 public class CategoriasController(IUnityOfWork _repository) : ControllerBase
 {
   [HttpGet("pagination")]
-  public ActionResult<IEnumerable<CategoriaDTO>> Get([FromQuery] CategoriasParameters parameters)
+  public async Task<ActionResult<IEnumerable<CategoriaDTO>>> Get([FromQuery] CategoriasParameters parameters)
   {
-    var categorias = _repository.CategoriaRepository.GetCategorias(parameters);
+    var categorias = await _repository.CategoriaRepository.GetCategorias(parameters);
     return ObterCategorias(categorias);
   }
 
   [HttpGet("filter/nome/pagination")]
-  public ActionResult<IEnumerable<CategoriaDTO>> GetCategoriasFiltradas([FromQuery] CategoriasFiltroNome categoriasFiltro)
+  public async Task<ActionResult<IEnumerable<CategoriaDTO>>> GetCategoriasFiltradas([FromQuery] CategoriasFiltroNome categoriasFiltro)
   {
-    var categoriasFiltradas = _repository.CategoriaRepository.GetCategoriasFiltroNome(categoriasFiltro);
+    var categoriasFiltradas = await _repository.CategoriaRepository.GetCategoriasFiltroNome(categoriasFiltro);
     return ObterCategorias(categoriasFiltradas);
   }
 
@@ -46,9 +46,9 @@ public class CategoriasController(IUnityOfWork _repository) : ControllerBase
   }
 
   [HttpGet]
-  public ActionResult<IEnumerable<CategoriaDTO>> Get()
+  public async Task<ActionResult<IEnumerable<CategoriaDTO>>> Get()
   {
-    var categorias = _repository.CategoriaRepository.GetAll();
+    var categorias = await _repository.CategoriaRepository.GetAll();
 
     if (categorias is null) return NotFound("A lista de categorias está vazia.");
 
@@ -58,9 +58,9 @@ public class CategoriasController(IUnityOfWork _repository) : ControllerBase
   }
 
   [HttpGet("{id:int}", Name = "ObterCategoria")]
-  public ActionResult<CategoriaDTO> Get(int id)
+  public async Task<ActionResult<CategoriaDTO>> Get(int id)
   {
-    var categoria = _repository.CategoriaRepository.Get(c => c.Id == id);
+    var categoria = await _repository.CategoriaRepository.Get(c => c.Id == id);
 
     if (categoria is null) return NotFound($"A categoria com id = {id} não existe!");
 
@@ -70,14 +70,14 @@ public class CategoriasController(IUnityOfWork _repository) : ControllerBase
   }
 
   [HttpPost]
-  public ActionResult<CategoriaDTO> Post(CategoriaDTO categoriaDTO)
+  public async Task<ActionResult<CategoriaDTO>> Post(CategoriaDTO categoriaDTO)
   {
     if (categoriaDTO is null) return BadRequest("Dados invalidos");
 
     var categoria = categoriaDTO.ToCategoria()!;
 
     var categoriaCriada = _repository.CategoriaRepository.Create(categoria);
-    _repository.Commit();
+    await _repository.Commit();
 
     var novaCategoriaDTO = categoriaCriada.ToCategoriaDTO();
 
@@ -85,7 +85,7 @@ public class CategoriasController(IUnityOfWork _repository) : ControllerBase
   }
 
   [HttpPut("{id:int}")]
-  public ActionResult<CategoriaDTO> Put(int id, CategoriaDTO categoriaDTO)
+  public async Task<ActionResult<CategoriaDTO>> Put(int id, CategoriaDTO categoriaDTO)
   {
     if (id != categoriaDTO.Id) return BadRequest("Dados invalidos");
 
@@ -96,7 +96,7 @@ public class CategoriasController(IUnityOfWork _repository) : ControllerBase
     var categoria = categoriaDTO.ToCategoria()!;
 
     var categoriaEditada = _repository.CategoriaRepository.Update(categoria);
-    _repository.Commit();
+    await _repository.Commit();
 
     var editadaCategoriaDTO = categoriaEditada.ToCategoriaDTO();
 
@@ -104,14 +104,14 @@ public class CategoriasController(IUnityOfWork _repository) : ControllerBase
   }
 
   [HttpDelete("{id:int}")]
-  public ActionResult<CategoriaDTO> Delete(int id)
+  public async Task<ActionResult<CategoriaDTO>> Delete(int id)
   {
-    var categoria = _repository.CategoriaRepository.Get(c => c.Id == id);
+    var categoria = await _repository.CategoriaRepository.Get(c => c.Id == id);
 
     if (categoria is null) return NotFound($"A categoria com id = {id} não existe!");
 
     var categoriaExcluida = _repository.CategoriaRepository.Delete(categoria);
-    _repository.Commit();
+    await _repository.Commit();
 
     var excluidaCategoriaDTO = categoriaExcluida.ToCategoriaDTO();
 

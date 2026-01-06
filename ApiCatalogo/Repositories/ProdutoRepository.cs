@@ -15,18 +15,20 @@ public class ProdutoRepository(ApiCatalogoContext _context) : Repositoy<Produto>
   //           .Skip((produtosParameters.PageNumber - 1) * produtosParameters.PageSize)
   //           .Take(produtosParameters.PageSize).ToList();
   // }
-  public PagedList<Produto> GetProdutos(ProdutosParameters parameters)
+  public async Task<PagedList<Produto>> GetProdutos(ProdutosParameters parameters)
   {
-    var produtos = GetAll() // AsQueryable - converte IEnumerable para IQueryable
-                    .OrderBy(p => p.Id).AsQueryable();
-    var produtosOrdenados = PagedList<Produto>.ToPagedList(produtos, parameters.PageNumber, parameters.PageSize);
+    var produtos = await GetAll();
 
-    return produtosOrdenados;
+    // AsQueryable - converte IEnumerable para IQueryable
+    var produtosOrdenados = produtos.OrderBy(p => p.Id).AsQueryable();
+    var produtosPaginados = PagedList<Produto>.ToPagedList(produtosOrdenados.AsQueryable(), parameters.PageNumber, parameters.PageSize);
+
+    return produtosPaginados;
   }
 
-  public PagedList<Produto> GetProdutosFiltroPreco(ProdutosFiltroPreco produtosFiltroParams)
+  public async Task<PagedList<Produto>> GetProdutosFiltroPreco(ProdutosFiltroPreco produtosFiltroParams)
   {
-    var produtos = GetAll().AsQueryable();
+    var produtos = await GetAll();
 
     if (produtosFiltroParams.Preco.HasValue && !string.IsNullOrEmpty(produtosFiltroParams.PrecoCriterio))
     {
@@ -43,13 +45,15 @@ public class ProdutoRepository(ApiCatalogoContext _context) : Repositoy<Produto>
         produtos = produtos.Where(p => p.Preco == produtosFiltroParams.Preco.Value).OrderBy(p => p.Preco);
       }
     }
-    var produtosFiltrados = PagedList<Produto>.ToPagedList(produtos, produtosFiltroParams.PageNumber, produtosFiltroParams.PageSize);
+    var produtosFiltrados = PagedList<Produto>.ToPagedList(produtos.AsQueryable(), produtosFiltroParams.PageNumber, produtosFiltroParams.PageSize);
 
     return produtosFiltrados;
   }
 
-  public IEnumerable<Produto> GetProdutosPorCategoria(int categoriaId)
+  public async Task<IEnumerable<Produto>> GetProdutosPorCategoria(int categoriaId)
   {
-    return GetAll().Where(c => c.CategoriaId == categoriaId);
+    var produtos = await GetAll();
+    var produtosCategoria = produtos.Where(c => c.CategoriaId == categoriaId);
+    return produtosCategoria;
   }
 }
