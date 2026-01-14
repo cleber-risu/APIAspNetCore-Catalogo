@@ -3,6 +3,7 @@ using ApiCatalogo.Models.DTOs;
 using ApiCatalogo.Models.DTOs.Mappings;
 using ApiCatalogo.Models.Pagination;
 using ApiCatalogo.Repositories.interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -46,6 +47,7 @@ public class CategoriasController(IUnityOfWork _repository) : ControllerBase
   }
 
   [HttpGet]
+  [Authorize]
   public async Task<ActionResult<IEnumerable<CategoriaDTO>>> Get()
   {
     var categorias = await _repository.CategoriaRepository.GetAll();
